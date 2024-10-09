@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutritional Tracker</title>
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('https://blog.myfitnesspal.com/essential-guide-to-healthy-eating/') no-repeat center center fixed; /* Background image */
+            background-size: cover; /* Cover the entire screen */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #FFC107; /* Bright yellow color for headings */
+        }
+
+        /* Form styles */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            padding: 12px;
+            margin-top: 8px;
+            border: 2px solid #FFC107; /* Border color */
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #ff9800; /* Darker yellow on focus */
+            outline: none;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background-color: #FFC107; /* Button color */
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff9800; /* Darker yellow on hover */
+            transform: translateY(-2px);
+        }
+
+        /* Recommendations section */
+        #recommendations {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #f9f9f9; /* Light table background */
+        }
+
+        th,
+        td {
+            border: 1px solid #FFC107; /* Table border */
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #FFC107; /* Header background */
+            color: white;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            margin: 20px auto;
+            width: 40px;
+            height: 40px;
+            border: 5px solid rgba(255, 193, 7, 0.2);
+            border-top-color: #FFC107;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Navigation bar styles */
+        .header-area {
+            background-color: #333;
+            padding: 10px 0;
+        }
+
+        .navbar-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logoimg img {
+            max-width: 100px;
+        }
+
+        .site-navbar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        .site-navbar ul li {
+            margin-right: 20px;
+        }
+
+        .site-navbar ul li a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .site-navbar ul li a:hover,
+        .site-navbar ul li a.active {
+            color: #FFC107;
+        }
+
+        .nav-toggler {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px; /* Less padding for smaller screens */
+            }
+
+            .nav-toggler {
+                display: inline-block;
+                cursor: pointer;
+            }
+
+            .site-navbar ul {
+                display: none;
+            }
+        }
+
+        /* Additional styles for goal percentages and unmet needs */
+        .goal-percentages, .unmet-needs {
+            margin-top: 20px;
+        }
+
+        .goal-percentages table, .unmet-needs table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #f1f1f1;
+        }
+
+        .goal-percentages th, .goal-percentages td,
+        .unmet-needs th, .unmet-needs td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .goal-percentages th, .unmet-needs th {
+            background-color: #FFC107;
+            color: white;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="header-area">
+        <div class="container">
+            <div class="row d_flex">
+                <div class="col-md-3 col-sm-3">
+                    
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <div class="navbar-area">
+                        <nav class="site-navbar">
+                            <ul>
+                                <li><a class="active" href="index.html">Home</a></li>
+                                <li><a href="about.html">About</a></li>
+                                <li><a href="services.html">Service</a></li>
+                                <li><a href="blog.html">Blog</a></li>
+                                <li><a href="contact.html">Contact Us</a></li>
+                                <li class="d_none"><a href="javascript:void(0)"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                                <li class="d_none"><a href="javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                            </ul>
+                            <button class="nav-toggler">
+                                <span></span>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nutritional Tracker Content -->
+    <div class="container">
+        <h2>Nutritional Tracker</h2>
+        <form id="nutritional-form">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" placeholder="Enter your age" required>
+
+            <label for="height">Height (in cm):</label>
+            <input type="number" id="height" name="height" placeholder="Enter your height" required>
+
+            <label for="weight">Weight (in kg):</label>
+            <input type="number" id="weight" name="weight" placeholder="Enter your weight" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label for="activity">Activity Level:</label>
+            <select id="activity" name="activity">
+                <option value="sedentary">Sedentary (little or no exercise)</option>
+                <option value="light">Lightly Active (light exercise/sports)</option>
+                <option value="moderate">Moderately Active (moderate exercise)</option>
+                <option value="very_active">Very Active (hard exercise)</option>
+            </select>
+
+            <label for="goal">Goal:</label>
+            <select id="goal" name="goal">
+                <option value="fat loss">Fat Loss</option>
+                <option value="muscle gain">Muscle Gain</option>
+            </select>
+
+            <button type="submit">Get Recommendations</button>
+        </form>
+
+        <div id="recommendations"></div>
+    </div>
+
+    <script>
+        document.getElementById('nutritional-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form from refreshing the page
+            document.getElementById('recommendations').innerHTML = '<div class="spinner"></div>'; // Show loading spinner
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            const userData = {
+                weight: parseFloat(formData.get('weight')),
+                height: parseFloat(formData.get('height')),
+                age: parseInt(formData.get('age')),
+                gender: formData.get('gender'),
+                activity_level: formData.get('activity'),
+                goal: formData.get('goal')
+            };
+
+            // Replace with your actual ngrok URL
+            const apiUrl = 'https://4684-34-30-138-130.ngrok-free.app/recommend/';
+
+            // Send the form data to the FastAPI endpoint
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Clear the loading spinner
+                    document.getElementById('recommendations').innerHTML = '';
+
+                    // Display daily nutritional needs
+                    let recommendationsHTML = `<h2>Daily Nutritional Needs</h2>
+                        <p>Calories: ${data.daily_needs.Calories.toFixed(2)} kcal</p>
+                        <p>Protein: ${data.daily_needs['Protein (g)'].toFixed(2)} g</p>
+                        <p>Carbs: ${data.daily_needs['Carbs (g)'].toFixed(2)} g</p>
+                        <p>Fats: ${data.daily_needs['Fats (g)'].toFixed(2)} g</p>
+                        <p>Sugars: ${data.daily_needs.sugars.toFixed(2)} g</p>
+                        <p>Cholesterol: ${data.daily_needs.cholesterol.toFixed(2)} mg</p>`;
+
+                    // Display goal percentages
+                    recommendationsHTML += `<div class="goal-percentages">
+                        <h2>Goal Completion Percentage</h2>
+                        <table>
+                            <tr>
+                                <th>Nutrient</th>
+                                <th>Percentage Met (%)</th>
+                            </tr>`;
+                    for (const nutrient in data.goal_percentage) {
+                        recommendationsHTML += `
+                            <tr>
+                                <td>${nutrient}</td>
+                                <td>${data.goal_percentage[nutrient]}%</td>
+                            </tr>`;
+                    }
+                    recommendationsHTML += `</table>
+                    </div>`;
+
+                    // Display meal recommendations
+                    recommendationsHTML += `<h2>Recommended Meals</h2>`;
+                    for (const meal in data.recommendations) {
+                        recommendationsHTML += `<h3>${meal.charAt(0).toUpperCase() + meal.slice(1)} Recommendations</h3>
+                        <table>
+                            <tr>
+                                <th>Food</th>
+                                <th>Calories</th>
+                                <th>Protein (g)</th>
+                                <th>Fats (g)</th>
+                                <th>Carbs (g)</th>
+                                <th>Cholesterol (mg)</th>
+                            </tr>`;
+                        data.recommendations[meal].forEach(food => {
+                            recommendationsHTML += `
+                                <tr>
+                                    <td>${food.Food}</td>
+                                    <td>${food.Calories.toFixed(2)} kcal</td>
+                                    <td>${food['Protein (g)'].toFixed(2)} g</td>
+                                    <td>${food['Fats (g)'].toFixed(2)} g</td>
+                                    <td>${food['Carbs (g)'].toFixed(2)} g</td>
+                                    <td>${food.cholesterol.toFixed(2)} mg</td>
+                                </tr>`;
+                        });
+                        recommendationsHTML += `</table>`;
+                    }
+
+                    // Display total nutrition
+                    recommendationsHTML += `<div class="total-nutrition">
+                        <h2>Total Nutrition from Recommendations</h2>
+                        <table>
+                            <tr>
+                                <th>Nutrient</th>
+                                <th>Total Intake</th>
+                            </tr>`;
+                    for (const nutrient in data.total_nutrition) {
+                        let unit = '';
+                        if (nutrient === 'Calories') unit = 'kcal';
+                        else if (nutrient === 'cholesterol') unit = 'mg';
+                        else unit = 'g';
+                        recommendationsHTML += `
+                            <tr>
+                                <td>${nutrient}</td>
+                                <td>${data.total_nutrition[nutrient].toFixed(2)} ${unit}</td>
+                            </tr>`;
+                    }
+                    recommendationsHTML += `</table>
+                    </div>`;
+
+                    // Display unmet needs if any
+                    if (data.unmet_needs && Object.keys(data.unmet_needs).length > 0) {
+                        recommendationsHTML += `<div class="unmet-needs">
+                            <h2>Unmet Nutritional Needs</h2>
+                            <table>
+                                <tr>
+                                    <th>Nutrient</th>
+                                    <th>Amount Needed</th>
+                                </tr>`;
+                        for (const nutrient in data.unmet_needs) {
+                            let unit = '';
+                            if (nutrient === 'Calories') unit = 'kcal';
+                            else if (nutrient === 'cholesterol') unit = 'mg';
+                            else unit = 'g';
+                            recommendationsHTML += `
+                                <tr>
+                                    <td>${nutrient}</td>
+                                    <td>${data.unmet_needs[nutrient].toFixed(2)} ${unit}</td>
+                                </tr>`;
+                        }
+                        recommendationsHTML += `</table>
+                            <p class="error-message">${data.message}</p>
+                        </div>`;
+                    } else {
+                        recommendationsHTML += `<p class="success-message">${data.message}</p>`;
+                    }
+
+                    // Insert the generated HTML into the recommendations div
+                    document.getElementById('recommendations').innerHTML = recommendationsHTML;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('recommendations').innerHTML = `<p class="error-message">An error occurred. Please try again.</p>`;
+                });
+        });
+    </script>
+
+</body>
+
+</html>
